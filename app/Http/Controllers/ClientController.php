@@ -90,6 +90,7 @@ class ClientController extends Controller
             'clientPhone' => $request->clientPhone,
             'clientEmail' => $request->clientEmail,
             'clientAddress' => $request->clientAddress,
+            'clientGender' => $request->clientGender,
         ]);
     
         // Respuesta exitosa
