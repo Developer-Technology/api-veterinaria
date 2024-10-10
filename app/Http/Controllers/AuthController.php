@@ -95,7 +95,22 @@ class AuthController extends Controller
      */
     public function me()
     {
-        return response()->json(auth('api')->user());
+        $user = auth('api')->user();
+        
+        return response()->json([
+            'success' => true,
+            'message' => 'Datos del usuario obtenidos correctamente',
+            'data' => [
+                'id' => $user->id,
+                'name' => $user->name . ' ' . $user->last_name,
+                'email' => $user->email,
+                'status' => $user->status,
+                'privilege' => $user->privilege,
+                'avatar' => $user->photo,
+                'created_at' => $user->created_at,
+                'updated_at' => $user->updated_at,
+            ]
+        ], 200);
     }
  
     /**
