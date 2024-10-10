@@ -13,14 +13,14 @@ return new class extends Migration
     {
         Schema::create('clients', function (Blueprint $table) {
             $table->id();
-            $table->integer('clientDoc')->length(12); // DNI or Cedula
-            $table->string('clientName', 50)->nullable(); // Nombre
-            $table->string('clientGender', 5)->nullable(); // Genero
-            $table->string('clientPhone', 20)->nullable(); // Teléfono
-            $table->string('clientEmail', 150)->nullable(); // Correo
-            $table->string('clientAddress', 150)->nullable(); // Domicilio
-            $table->text('clientPhotoUrl')->nullable(); // Foto URL
-            $table->timestamps(); // created_at and updated_at
+            $table->string('clientDoc')->unique();
+            $table->string('clientName', 50);
+            $table->string('clientGender', 5)->nullable();
+            $table->string('clientPhone', 20)->nullable();
+            $table->string('clientEmail', 150)->unique()->nullable();
+            $table->string('clientAddress', 150)->nullable();
+            $table->text('clientPhotoUrl')->nullable();
+            $table->timestamps();
         });
     }
 
