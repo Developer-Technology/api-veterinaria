@@ -30,9 +30,13 @@ class AuthController extends Controller
         // Validación
         $validator = Validator::make(request()->all(), [
             'name' => 'required|string|max:255',
+            'doc' => 'required|string|unique:users',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:8|confirmed', // La confirmación requiere el campo 'password_confirmation'
+            'password' => 'required|min:8|confirmed',
         ], [
+            'name.required' => 'El nombre es obligatorio',
+            'doc.required' => 'El documento es obligatorio.',
+            'doc.unique' => 'El documento ya está registrado.',
             'password.confirmed' => 'La confirmación de la contraseña no coincide.',
             'email.unique' => 'El correo electrónico ya está registrado.',
             'password.min' => 'La contraseña debe tener al menos 8 caracteres.'
@@ -49,9 +53,14 @@ class AuthController extends Controller
     
         // Crear nuevo usuario
         $user = User::create([
+            'doc' => request()->doc,
             'name' => request()->name,
             'email' => request()->email,
             'password' => bcrypt(request()->password),
+            'phone' => request()->phone,
+            'sex' => request()->sex,
+            'status' => request()->status,
+            'username' => request()->username
         ]);
     
         // Generar el token JWT para el usuario recién registrado
@@ -60,7 +69,7 @@ class AuthController extends Controller
         // Respuesta
         return response()->json([
             'success' => true,
-            'message' => 'Registro exitoso. Usuario autenticado.',
+            'message' => 'Usuario agregado correctamente.',
             'user' => [
                 'name' => $user->name,
                 'email' => $user->email,
