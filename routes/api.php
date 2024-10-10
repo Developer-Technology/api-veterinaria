@@ -33,4 +33,5 @@ Route::group([
     'middleware' => 'auth:api',  // Protegido por JWT
 ], function () {
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
 });

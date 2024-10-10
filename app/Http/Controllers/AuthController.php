@@ -136,7 +136,7 @@ class AuthController extends Controller
             'message' => 'Datos del usuario obtenidos correctamente',
             'data' => [
                 'id' => $user->id,
-                'name' => $user->name . ' ' . $user->last_name,
+                'name' => $user->name,
                 'email' => $user->email,
                 'status' => $user->status,
                 'privilege' => $user->privilege,
