@@ -54,12 +54,37 @@ class AuthController extends Controller
      */
     public function login()
     {
-        $credentials = request(['email', 'password']);
- 
-        if (! $token = auth('api')->attempt($credentials)) {
-            return response()->json(['error' => 'Unauthorized'], 401);
+        // Validar los datos de entrada
+        $validator = Validator::make(request()->all(), [
+            'email' => 'required|email',
+            'password' => 'required|min:6'
+        ], [
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'El formato del correo electrónico no es válido.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 6 caracteres.'
+        ]);
+
+        // Si la validación falla, retornar un mensaje de error
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Errores de validación.',
+                'errors' => $validator->errors()
+            ], 422);
         }
- 
+
+        // Intentar autenticar al usuario
+        $credentials = request(['email', 'password']);
+
+        if (!$token = auth('api')->attempt($credentials)) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Credenciales incorrectas.'
+            ], 401);
+        }
+
+        // Retornar el token junto con los datos del usuario
         return $this->respondWithToken($token);
     }
  
@@ -105,9 +130,12 @@ class AuthController extends Controller
     protected function respondWithToken($token)
     {
         return response()->json([
-            'access_token' => $token,
+            'success' => true,
+            'message' => 'Inicio de sesión exitoso',
+            'token' => $token,
             'token_type' => 'bearer',
-            'expires_in' => auth('api')->factory()->getTTL() * 60
-        ]);
+            'expires_in' => auth('api')->factory()->getTTL() * 60, // Tiempo de expiración en segundos
+            'user' => auth('api')->user() // Detalles del usuario autenticado
+        ], 200);
     }
 }
