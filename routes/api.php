@@ -28,10 +28,15 @@ Route::group([
     Route::post('/me', [AuthController::class, 'me'])->name('me');
 });
 
-// Ruta protegida para obtener usuarios, sin el prefijo 'auth'
 Route::group([
     'middleware' => 'auth:api',  // Protegido por JWT
 ], function () {
+    // Obtener todos los usuarios
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
+    
+    // Obtener un usuario por ID
+    Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
+    
+    // Actualizar un usuario por ID
     Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
 });

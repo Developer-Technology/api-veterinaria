@@ -25,6 +25,31 @@ class UserController extends Controller
     }
 
     /**
+     * Obtener un usuario por su ID.
+     *
+     * @param int $id
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function show($id)
+    {
+        // Buscar el usuario por ID
+        $user = User::find($id);
+
+        // Verificar si el usuario existe
+        if (!$user) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Usuario no encontrado.'
+            ], 404);
+        }
+
+        return response()->json([
+            'success' => true,
+            'data' => $user
+        ], 200);
+    }
+
+    /**
      * Editar un usuario existente.
      *
      * @param \Illuminate\Http\Request $request
