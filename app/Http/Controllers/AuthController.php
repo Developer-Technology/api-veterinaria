@@ -27,25 +27,50 @@ class AuthController extends Controller
      * @return \Illuminate\Http\JsonResponse
      */
     public function register() {
+        // Validación
         $validator = Validator::make(request()->all(), [
-            'name' => 'required',
+            'name' => 'required|string|max:255',
             'email' => 'required|email|unique:users',
-            'password' => 'required|min:8',
+            'password' => 'required|min:8|confirmed', // La confirmación requiere el campo 'password_confirmation'
+        ], [
+            'password.confirmed' => 'La confirmación de la contraseña no coincide.',
+            'email.unique' => 'El correo electrónico ya está registrado.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.'
         ]);
- 
-        if($validator->fails()){
-            return response()->json($validator->errors()->toJson(), 400);
+    
+        // Verificar si la validación falla
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Errores de validación.',
+                'errors' => $validator->errors()
+            ], 422);
         }
- 
-        $user = new User;
-        $user->name = request()->name;
-        $user->email = request()->email;
-        $user->password = bcrypt(request()->password);
-        $user->save();
- 
-        return response()->json($user, 201);
-    }
- 
+    
+        // Crear nuevo usuario
+        $user = User::create([
+            'name' => request()->name,
+            'email' => request()->email,
+            'password' => bcrypt(request()->password),
+        ]);
+    
+        // Generar el token JWT para el usuario recién registrado
+        $token = auth('api')->attempt(['email' => $user->email, 'password' => request()->password]);
+    
+        // Respuesta
+        return response()->json([
+            'success' => true,
+            'message' => 'Registro exitoso. Usuario autenticado.',
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'created_at' => $user->created_at,
+            ],
+            'token' => $token,  // Enviar el token JWT
+            'token_type' => 'bearer',
+            'expires_in' => auth('api')->factory()->getTTL() * 60,  // Tiempo de expiración del token en segundos
+        ], 201);
+    }    
  
     /**
      * Get a JWT via given credentials.
