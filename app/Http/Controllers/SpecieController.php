@@ -164,6 +164,14 @@ class SpecieController extends Controller
             ], 404);
         }
 
+        // Verificar si existen razas asociadas a esta especie
+        if ($specie->breeds()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se puede eliminar la especie porque tiene razas asociadas.'
+            ], 400);  // Código de error 400: Petición incorrecta
+        }
+
         $specie->delete();
 
         return response()->json([
@@ -171,5 +179,5 @@ class SpecieController extends Controller
             'message' => 'Especie eliminada correctamente.'
         ], 200);
     }
-    
+ 
 }
