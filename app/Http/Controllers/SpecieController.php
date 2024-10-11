@@ -172,6 +172,14 @@ class SpecieController extends Controller
             ], 400);  // Código de error 400: Petición incorrecta
         }
 
+         // Verificar si existen vacunas asociadas a esta especie
+        if ($specie->vaccines()->exists()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se puede eliminar la especie porque tiene vacunas asociadas.'
+            ], 400);  // Código de error 400: Petición incorrecta
+        }
+
         $specie->delete();
 
         return response()->json([

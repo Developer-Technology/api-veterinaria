@@ -27,4 +27,10 @@ class Specie extends Model
         return $this->hasMany(Pet::class, 'species_id', 'id');
     }
 
+    // Relación uno a muchos con Vaccine
+    public function vaccines()
+    {
+        return $this->hasMany(Vaccine::class, 'species_id', 'id');
+    }
+
 }
