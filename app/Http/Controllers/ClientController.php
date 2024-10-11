@@ -187,6 +187,14 @@ class ClientController extends Controller
             ], 404);
         }
 
+        // Verificar si hay mascotas asociadas a este cliente
+        if ($client->pets()->count() > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se puede eliminar el cliente porque hay mascotas asociadas.',
+            ], 400); // Código 400 para indicar una solicitud incorrecta
+        }
+
         $client->delete();
 
         return response()->json([
