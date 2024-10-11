@@ -27,7 +27,7 @@ class BreedController extends Controller
                 'id' => $breed->id,
                 'breedName' => $breed->breedName,
                 'species_id' => $breed->species_id,
-                'speciesName' => $breed->species ? $breed->species->specieName : null,
+                'specieName' => $breed->species ? $breed->species->specieName : null,
                 'created_at' => $breed->created_at,
                 'updated_at' => $breed->updated_at
             ];
