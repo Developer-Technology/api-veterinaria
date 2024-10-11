@@ -194,4 +194,5 @@ class ClientController extends Controller
             'message' => 'Cliente eliminado correctamente.'
         ], 200);
     }
+
 }

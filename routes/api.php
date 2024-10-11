@@ -5,6 +5,7 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
+use App\Http\Controllers\SupplierController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -42,4 +43,10 @@ Route::group([
     Route::post('/clients', [ClientController::class, 'store'])->name('clients.store');
     Route::put('/clients/{id}', [ClientController::class, 'update'])->name('clients.update');
     Route::delete('/clients/{id}', [ClientController::class, 'destroy'])->name('clients.destroy');
+    //Proveedores
+    Route::get('/suppliers', [SupplierController::class, 'index'])->name('suppliers.index');
+    Route::get('/suppliers/{id}', [SupplierController::class, 'show'])->name('suppliers.show');
+    Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
+    Route::put('/suppliers/{id}', [SupplierController::class, 'update'])->name('suppliers.update');
+    Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
 });
