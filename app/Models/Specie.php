@@ -20,5 +20,11 @@ class Specie extends Model
     {
         return $this->hasMany(Breed::class, 'species_id', 'id');
     }
+    
+    // Relación uno a muchos con Pet
+    public function pets()
+    {
+        return $this->hasMany(Pet::class, 'species_id', 'id');
+    }
 
 }

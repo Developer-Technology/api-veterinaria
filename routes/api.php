@@ -8,6 +8,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SpecieController;
 use App\Http\Controllers\BreedController;
+use App\Http\Controllers\PetController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -63,4 +64,10 @@ Route::group([
     Route::post('breeds', [BreedController::class, 'store'])->name('breeds.store');
     Route::put('breeds/{id}', [BreedController::class, 'update'])->name('breeds.update');
     Route::delete('breeds/{id}', [BreedController::class, 'destroy'])->name('breeds.destroy');
+    //Mascotas
+    Route::get('pets', [PetController::class, 'index'])->name('pets.index');
+    Route::get('pets/{id}', [PetController::class, 'show'])->name('pets.show');
+    Route::post('pets', [PetController::class, 'store'])->name('pets.store');
+    Route::put('pets/{id}', [PetController::class, 'update'])->name('pets.update');
+    Route::delete('pets/{id}', [PetController::class, 'destroy'])->name('pets.destroy');
 });

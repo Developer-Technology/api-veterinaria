@@ -20,4 +20,11 @@ class Client extends Model
         'clientAddress',
         'clientPhotoUrl'
     ];
+
+    // Relación uno a muchos con Pet
+    public function pets()
+    {
+        return $this->hasMany(Pet::class, 'clients_id', 'id');
+    }
+
 }
