@@ -7,6 +7,7 @@ use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SupplierController;
 use App\Http\Controllers\SpecieController;
+use App\Http\Controllers\BreedController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -56,4 +57,10 @@ Route::group([
     Route::post('/species', [SpecieController::class, 'store'])->name('species.store');
     Route::put('/species/{id}', [SpecieController::class, 'update'])->name('species.update');
     Route::delete('/species/{id}', [SpecieController::class, 'destroy'])->name('species.destroy');
+    //Razas
+    Route::get('breeds', [BreedController::class, 'index'])->name('breeds.index');
+    Route::get('breeds/{id}', [BreedController::class, 'show'])->name('breeds.show');
+    Route::post('breeds', [BreedController::class, 'store'])->name('breeds.store');
+    Route::put('breeds/{id}', [BreedController::class, 'update'])->name('breeds.update');
+    Route::delete('breeds/{id}', [BreedController::class, 'destroy'])->name('breeds.destroy');
 });
