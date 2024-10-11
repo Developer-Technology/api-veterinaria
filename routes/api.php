@@ -10,6 +10,7 @@ use App\Http\Controllers\SpecieController;
 use App\Http\Controllers\BreedController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\VaccineController;
+use App\Http\Controllers\PetNoteController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -77,4 +78,10 @@ Route::group([
     Route::post('pets', [PetController::class, 'store'])->name('pets.store');
     Route::put('pets/{id}', [PetController::class, 'update'])->name('pets.update');
     Route::delete('pets/{id}', [PetController::class, 'destroy'])->name('pets.destroy');
+    //Notas Mascotas
+    Route::get('petnotes', [PetNoteController::class, 'index'])->name('petnotes.index');
+    Route::get('petnotes/{id}', [PetNoteController::class, 'show'])->name('petnotes.show');
+    Route::post('petnotes', [PetNoteController::class, 'store'])->name('petnotes.store');
+    Route::put('petnotes/{id}', [PetNoteController::class, 'update'])->name('petnotes.update');
+    Route::delete('petnotes/{id}', [PetNoteController::class, 'destroy'])->name('petnotes.destroy');
 });
