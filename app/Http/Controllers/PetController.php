@@ -7,6 +7,7 @@ use App\Models\Breed;
 use App\Models\Specie;
 use App\Models\Client;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 
 class PetController extends Controller
@@ -81,6 +82,7 @@ class PetController extends Controller
             'breeds_id' => 'required|exists:breeds,id',
             'petGender' => 'required|string|max:10',
             'clients_id' => 'required|exists:clients,id',
+            'petPhoto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'petCode.required' => 'El código de la mascota es obligatorio.',
             'petName.required' => 'El nombre de la mascota es obligatorio.',
@@ -101,11 +103,27 @@ class PetController extends Controller
             ], 422);
         }
 
-        $pet = Pet::create($request->only([
-            'petCode', 'petName', 'petBirthDate', 'petWeight', 'petColor', 
-            'species_id', 'breeds_id', 'petGender', 'petPhoto', 'petAdditional', 
-            'clients_id'
-        ]));
+        // Cargar y almacenar la imagen
+        $petPhoto = null;
+        if ($request->hasFile('petPhoto')) {
+            $petPhoto = $request->file('petPhoto')->store('public/pet_images'); // Almacenar en storage/app/public/pet_images
+            $petPhoto = Storage::url($petPhoto); // Obtener la URL accesible públicamente
+        }
+
+        // Crear la mascota con los datos del formulario y la URL de la imagen
+        $pet = Pet::create([
+            'petCode' => $request->petCode,
+            'petName' => $request->petName,
+            'petBirthDate' => $request->petBirthDate,
+            'petWeight' => $request->petWeight,
+            'petColor' => $request->petColor,
+            'species_id' => $request->species_id,
+            'breeds_id' => $request->breeds_id,
+            'petGender' => $request->petGender,
+            'petPhoto' => $petPhoto, // Guardar la URL de la foto
+            'petAdditional' => $request->petAdditional,
+            'clients_id' => $request->clients_id,
+        ]);
 
         return response()->json([
             'success' => true,
@@ -136,6 +154,7 @@ class PetController extends Controller
             'breeds_id' => 'required|exists:breeds,id',
             'petGender' => 'required|string|max:10',
             'clients_id' => 'required|exists:clients,id',
+            'petPhoto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
             'petCode.required' => 'El código de la mascota es obligatorio.',
             'petName.required' => 'El nombre de la mascota es obligatorio.',
@@ -154,6 +173,16 @@ class PetController extends Controller
                 'message' => 'Errores de validación',
                 'errors' => $validator->errors()
             ], 422);
+        }
+
+        // Actualizar la imagen si se subió una nueva
+        if ($request->hasFile('petPhoto')) {
+            if ($pet->petPhoto) {
+                Storage::delete(str_replace('/storage', 'public', $pet->petPhoto)); // Eliminar la imagen anterior
+            }
+            $petPhoto = $request->file('petPhoto')->store('public/pet_images');
+            $petPhoto = Storage::url($petPhoto);
+            $pet->petPhoto = $petPhoto;
         }
 
         $pet->update($request->only([
@@ -179,6 +208,11 @@ class PetController extends Controller
                 'success' => false,
                 'message' => 'Mascota no encontrada',
             ], 404);
+        }
+
+        // Eliminar la imagen asociada si existe
+        if ($pet->petPhoto) {
+            Storage::delete(str_replace('/storage', 'public', $pet->petPhoto));
         }
 
         $pet->delete();
