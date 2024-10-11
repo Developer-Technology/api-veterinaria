@@ -73,7 +73,6 @@ class PetController extends Controller
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
-            'petCode' => 'required|string|max:50|unique:pets,petCode',
             'petName' => 'required|string|max:100',
             'petBirthDate' => 'required|date',
             'petWeight' => 'nullable|string|max:10',
@@ -84,7 +83,6 @@ class PetController extends Controller
             'clients_id' => 'required|exists:clients,id',
             'petPhoto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ], [
-            'petCode.required' => 'El código de la mascota es obligatorio.',
             'petName.required' => 'El nombre de la mascota es obligatorio.',
             'petBirthDate.required' => 'La fecha de nacimiento de la mascota es obligatoria.',
             'species_id.required' => 'La especie es obligatoria.',
@@ -144,27 +142,14 @@ class PetController extends Controller
             ], 404);
         }
 
+        // Validar los datos (sin la imagen)
         $validator = Validator::make($request->all(), [
-            'petCode' => 'required|string|max:50|unique:pets,petCode,' . $id,
             'petName' => 'required|string|max:100',
             'petBirthDate' => 'required|date',
-            'petWeight' => 'nullable|string|max:10',
-            'petColor' => 'nullable|string|max:100',
             'species_id' => 'required|exists:species,id',
             'breeds_id' => 'required|exists:breeds,id',
             'petGender' => 'required|string|max:10',
             'clients_id' => 'required|exists:clients,id',
-            'petPhoto' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
-        ], [
-            'petCode.required' => 'El código de la mascota es obligatorio.',
-            'petName.required' => 'El nombre de la mascota es obligatorio.',
-            'petBirthDate.required' => 'La fecha de nacimiento de la mascota es obligatoria.',
-            'species_id.required' => 'La especie es obligatoria.',
-            'species_id.exists' => 'La especie no está registrada.',
-            'breeds_id.required' => 'La raza es obligatoria.',
-            'breeds_id.exists' => 'La raza no está registrada.',
-            'clients_id.required' => 'El cliente es obligatorio.',
-            'clients_id.exists' => 'El cliente no está registrado.',
         ]);
 
         if ($validator->fails()) {
@@ -175,27 +160,71 @@ class PetController extends Controller
             ], 422);
         }
 
-        // Actualizar la imagen si se subió una nueva
-        if ($request->hasFile('petPhoto')) {
-            if ($pet->petPhoto) {
-                Storage::delete(str_replace('/storage', 'public', $pet->petPhoto)); // Eliminar la imagen anterior
-            }
-            $petPhoto = $request->file('petPhoto')->store('public/pet_images');
-            $petPhoto = Storage::url($petPhoto);
-            $pet->petPhoto = $petPhoto;
-        }
-
-        $pet->update($request->only([
-            'petCode', 'petName', 'petBirthDate', 'petWeight', 'petColor', 
-            'species_id', 'breeds_id', 'petGender', 'petPhoto', 'petAdditional', 
-            'clients_id'
-        ]));
+        // Actualizar los datos de la mascota (sin la imagen)
+        $pet->update([
+            'petName' => $request->input('petName'),
+            'petBirthDate' => $request->input('petBirthDate'),
+            'species_id' => $request->input('species_id'),
+            'breeds_id' => $request->input('breeds_id'),
+            'petGender' => $request->input('petGender'),
+            'clients_id' => $request->input('clients_id'),
+            'petAdditional' => $request->input('petAdditional'),
+        ]);
 
         return response()->json([
             'success' => true,
-            'message' => 'Mascota actualizada con éxito',
+            'message' => 'Datos de la mascota actualizados con éxito',
             'data' => $pet
         ], 200);
+    }
+    
+    public function upload(Request $request, $id)
+    {
+        $pet = Pet::find($id);
+
+        if (!$pet) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Mascota no encontrada',
+            ], 404);
+        }
+
+        // Validar que exista un archivo de imagen
+        $validator = Validator::make($request->all(), [
+            'petPhoto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Errores de validación',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // Manejar la imagen
+        if ($request->hasFile('petPhoto')) {
+            // Si ya tiene una imagen, eliminar la anterior
+            if ($pet->petPhoto) {
+                Storage::delete(str_replace('/storage', 'public', $pet->petPhoto));
+            }
+
+            // Guardar la nueva imagen
+            $petPhoto = $request->file('petPhoto')->store('public/pet_images');
+            $pet->petPhoto = Storage::url($petPhoto);
+            $pet->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Imagen de la mascota actualizada con éxito',
+                'data' => $pet->petPhoto,
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'No se pudo actualizar la imagen de la mascota',
+        ], 400);
     }
 
     // Eliminar una mascota

@@ -77,6 +77,7 @@ Route::group([
     Route::get('pets/{id}', [PetController::class, 'show'])->name('pets.show');
     Route::post('pets', [PetController::class, 'store'])->name('pets.store');
     Route::put('pets/{id}', [PetController::class, 'update'])->name('pets.update');
+    Route::post('pets/{id}/upload', [PetController::class, 'upload'])->name('pets.upload');
     Route::delete('pets/{id}', [PetController::class, 'destroy'])->name('pets.destroy');
     //Notas Mascotas
     Route::get('petnotes', [PetNoteController::class, 'index'])->name('petnotes.index');
