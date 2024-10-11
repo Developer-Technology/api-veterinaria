@@ -141,6 +141,15 @@ class BreedController extends Controller
             ], 404);
         }
 
+        // Verificar si hay mascotas asociadas a esta raza
+        if ($breed->pets()->count() > 0) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se puede eliminar la raza porque hay mascotas asociadas.',
+            ], 400); // Código 400 para indicar una solicitud incorrecta
+        }
+
+        // Si no hay mascotas asociadas, se puede eliminar la raza
         $breed->delete();
 
         return response()->json([
