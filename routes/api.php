@@ -6,6 +6,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\ClientController;
 use App\Http\Controllers\SupplierController;
+use App\Http\Controllers\SpecieController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -49,4 +50,10 @@ Route::group([
     Route::post('/suppliers', [SupplierController::class, 'store'])->name('suppliers.store');
     Route::put('/suppliers/{id}', [SupplierController::class, 'update'])->name('suppliers.update');
     Route::delete('/suppliers/{id}', [SupplierController::class, 'destroy'])->name('suppliers.destroy');
+    //Especies
+    Route::get('/species', [SpecieController::class, 'index'])->name('species.index');
+    Route::get('/species/{id}', [SpecieController::class, 'show'])->name('species.show');
+    Route::post('/species', [SpecieController::class, 'store'])->name('species.store');
+    Route::put('/species/{id}', [SpecieController::class, 'update'])->name('species.update');
+    Route::delete('/species/{id}', [SpecieController::class, 'destroy'])->name('species.destroy');
 });
