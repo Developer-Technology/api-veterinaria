@@ -91,5 +91,6 @@ Route::group([
     Route::get('companies/{id}', [CompanyController::class, 'show'])->name('companies.show');
     Route::post('companies', [CompanyController::class, 'store'])->name('companies.store');
     Route::put('companies/{id}', [CompanyController::class, 'update'])->name('companies.update');
+    Route::post('companies/{id}/upload', [CompanyController::class, 'upload'])->name('companies.upload');
     Route::delete('companies/{id}', [CompanyController::class, 'destroy'])->name('companies.destroy');
 });

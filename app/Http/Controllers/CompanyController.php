@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Storage;
 use Validator;
 
 class CompanyController extends Controller
@@ -181,6 +182,55 @@ class CompanyController extends Controller
             'message' => 'Empresa actualizada correctamente.',
             'data' => $company
         ], 200);
+    }
+
+    public function upload(Request $request, $id)
+    {
+        $company = Company::find($id);
+
+        if (!$company) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Empresa no encontrada',
+            ], 404);
+        }
+
+        // Validar que exista un archivo de imagen
+        $validator = Validator::make($request->all(), [
+            'companyPhoto' => 'required|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
+
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Errores de validación',
+                'errors' => $validator->errors(),
+            ], 422);
+        }
+
+        // Manejar la imagen
+        if ($request->hasFile('companyPhoto')) {
+            // Si ya tiene una imagen, eliminar la anterior
+            if ($company->companyPhoto) {
+                Storage::delete(str_replace('/storage', 'public', $company->companyPhoto));
+            }
+
+            // Guardar la nueva imagen
+            $companyPhoto = $request->file('companyPhoto')->store('public/company_logos');
+            $company->companyPhoto = Storage::url($companyPhoto);
+            $company->save();
+
+            return response()->json([
+                'success' => true,
+                'message' => 'Logo de la empresa actualizada con éxito',
+                'data' => $company->companyPhoto,
+            ], 200);
+        }
+
+        return response()->json([
+            'success' => false,
+            'message' => 'No se pudo actualizar la logo de la empresa',
+        ], 400);
     }
 
     /**
