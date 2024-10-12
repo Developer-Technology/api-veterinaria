@@ -167,6 +167,8 @@ class PetController extends Controller
             'species_id' => $request->input('species_id'),
             'breeds_id' => $request->input('breeds_id'),
             'petGender' => $request->input('petGender'),
+            'petColor' => $request->input('petColor'),
+            'petWeight' => $request->input('petWeight'),
             'clients_id' => $request->input('clients_id'),
             'petAdditional' => $request->input('petAdditional'),
         ]);
