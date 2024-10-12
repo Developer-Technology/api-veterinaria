@@ -11,6 +11,7 @@ use App\Http\Controllers\BreedController;
 use App\Http\Controllers\PetController;
 use App\Http\Controllers\VaccineController;
 use App\Http\Controllers\PetNoteController;
+use App\Http\Controllers\CompanyController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -85,4 +86,10 @@ Route::group([
     Route::post('petnotes', [PetNoteController::class, 'store'])->name('petnotes.store');
     Route::put('petnotes/{id}', [PetNoteController::class, 'update'])->name('petnotes.update');
     Route::delete('petnotes/{id}', [PetNoteController::class, 'destroy'])->name('petnotes.destroy');
+    //Empresas
+    Route::get('companies', [CompanyController::class, 'index'])->name('companies.index');
+    Route::get('companies/{id}', [CompanyController::class, 'show'])->name('companies.show');
+    Route::post('companies', [CompanyController::class, 'store'])->name('companies.store');
+    Route::put('companies/{id}', [CompanyController::class, 'update'])->name('companies.update');
+    Route::delete('companies/{id}', [CompanyController::class, 'destroy'])->name('companies.destroy');
 });
