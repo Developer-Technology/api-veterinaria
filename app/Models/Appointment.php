@@ -9,12 +9,11 @@ class Appointment extends Model
 {
     use HasFactory;
 
-    // Especificamos el nombre de la tabla
     protected $table = 'appointments';
 
-    // Definimos los campos que se pueden asignar de manera masiva
     protected $fillable = [
         'pet_id', 
+        'client_id', // Añadido el cliente
         'appointmentDate', 
         'reason', 
         'status', 
@@ -22,10 +21,14 @@ class Appointment extends Model
         'whatsappAlertSent'
     ];
 
-    // Relación con la tabla de pets (Mascotas)
     public function pet()
     {
-        return $this->belongsTo(Pet::class, 'pet_id', 'id');
+        return $this->belongsTo(Pet::class, 'pet_id');
+    }
+
+    public function client()
+    {
+        return $this->belongsTo(Client::class, 'client_id'); // Relación con clientes
     }
 
 }

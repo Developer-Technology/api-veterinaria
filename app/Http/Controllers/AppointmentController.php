@@ -14,17 +14,16 @@ class AppointmentController extends Controller
         $this->middleware('auth:api');
     }
 
-    // Listar todas las citas con la información de la mascota asociada
+    // Listar todas las citas con la información de la mascota y cliente asociado
     public function index()
     {
-        $appointments = Appointment::with('pet')->get();
+        $appointments = Appointment::with(['pet', 'client'])->get();
 
-        // Mapear los resultados para formatearlos según se requiere
         $formattedAppointments = $appointments->map(function ($appointment) {
             return [
                 'id' => $appointment->id,
                 'petName' => $appointment->pet->petName,
-                'owner' => $appointment->pet->owner->name, // Supongo que hay una relación de la mascota con el cliente
+                'owner' => $appointment->client->name, // Información del cliente (dueño)
                 'appointmentDate' => $appointment->appointmentDate,
                 'reason' => $appointment->reason,
                 'status' => $appointment->status,

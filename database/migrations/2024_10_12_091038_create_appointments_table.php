@@ -16,6 +16,7 @@ class CreateAppointmentsTable extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->foreignId('pet_id')->constrained('pets')->onDelete('cascade'); // Relación con la tabla de mascotas
+            $table->foreignId('client_id')->constrained('clients')->onDelete('cascade'); // Relación con la tabla de clientes
             $table->dateTime('appointmentDate'); // Fecha y hora de la cita
             $table->string('reason'); // Motivo de la cita
             $table->enum('status', ['pending', 'confirmed', 'cancelled']); // Estado de la cita
@@ -37,5 +38,5 @@ class CreateAppointmentsTable extends Migration
     {
         Schema::dropIfExists('appointments');
     }
-
+    
 }
