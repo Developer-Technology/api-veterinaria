@@ -106,5 +106,5 @@ Route::group([
     Route::get('vaccineshistory/{id}', [VaccineHistoryController::class, 'show'])->name('vaccineshistory.show');
     Route::post('vaccineshistory', [VaccineHistoryController::class, 'store'])->name('vaccineshistory.store');
     Route::put('vaccineshistory/{id}', [VaccineHistoryController::class, 'update'])->name('vaccineshistory.update');
-    Route::delete('vaccineshistory/{id}', [VaccineHistoryController::class, 'destroy'])->name('vaccineshistory.destroy');
+    Route::get('pets/{petId}/vaccine-history', [VaccineHistoryController::class, 'showPet'])->name('vaccineshistory.showPet');
 });

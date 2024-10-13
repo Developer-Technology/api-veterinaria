@@ -60,6 +60,21 @@ class VaccineHistoryController extends Controller
         ], 200);
     }
 
+    // Obtener el historial de vacunas por el ID de la mascota (pet_id)
+    public function showPet($petId)
+    {
+        // Buscar todos los historiales de vacunas relacionados con la mascota por pet_id
+        $vaccineHistory = VaccineHistory::with(['pet', 'vaccine'])
+                            ->where('pet_id', $petId)
+                            ->get();
+
+        // Retornar el historial de vacunas de la mascota
+        return response()->json([
+            'success' => true,
+            'data' => $vaccineHistory
+        ], 200);
+    }
+
     // Crear un nuevo registro de historial de vacuna
     public function store(Request $request)
     {
