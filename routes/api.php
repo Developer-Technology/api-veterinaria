@@ -13,6 +13,7 @@ use App\Http\Controllers\VaccineController;
 use App\Http\Controllers\PetNoteController;
 use App\Http\Controllers\CompanyController;
 use App\Http\Controllers\AppointmentController;
+use App\Http\Controllers\VaccineHistoryController;
 /*
 |--------------------------------------------------------------------------
 | API Routes
@@ -100,4 +101,10 @@ Route::group([
     Route::post('appointments', [AppointmentController::class, 'store'])->name('appointments.store');
     Route::put('appointments/{id}', [AppointmentController::class, 'update'])->name('appointments.update');
     Route::delete('appointments/{id}', [AppointmentController::class, 'destroy'])->name('appointments.destroy');
+    //Historial Vacunas
+    Route::get('vaccineshistory', [VaccineHistoryController::class, 'index'])->name('vaccineshistory.index');
+    Route::get('vaccineshistory/{id}', [VaccineHistoryController::class, 'show'])->name('vaccineshistory.show');
+    Route::post('vaccineshistory', [VaccineHistoryController::class, 'store'])->name('vaccineshistory.store');
+    Route::put('vaccineshistory/{id}', [VaccineHistoryController::class, 'update'])->name('vaccineshistory.update');
+    Route::delete('vaccineshistory/{id}', [VaccineHistoryController::class, 'destroy'])->name('vaccineshistory.destroy');
 });

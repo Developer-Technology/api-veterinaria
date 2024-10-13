@@ -21,7 +21,7 @@ class PetController extends Controller
     // Listar todas las mascotas con sus respectivas especies, razas, y clientes
     public function index()
     {
-        $pets = Pet::with(['species', 'breed', 'client'])->get();
+        $pets = Pet::with(['species', 'breed', 'client', 'notes'])->get();
 
         // Mapear los resultados para formatearlos según se requiere
         $formattedPets = $pets->map(function ($pet) {
@@ -42,6 +42,12 @@ class PetController extends Controller
                 'petPhoto' => $pet->petPhoto,
                 'clientPhoto' => $pet->clientPhoto,
                 'petAdditional' => $pet->petAdditional,
+                // Incluir las notas en el formato
+                'notes' => $pet->notes->map(function ($note) {
+                    return [
+                        'id' => $note->id
+                    ];
+                }),
                 'created_at' => $pet->created_at,
                 'updated_at' => $pet->updated_at
             ];
