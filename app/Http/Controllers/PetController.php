@@ -56,7 +56,7 @@ class PetController extends Controller
     // Obtener una mascota específica por su ID
     public function show($id)
     {
-        $pet = Pet::with(['species', 'breed', 'client'])->find($id);
+        $pet = Pet::with(['species', 'breed', 'client', 'notes'])->find($id);
 
         if (!$pet) {
             return response()->json([
@@ -83,6 +83,16 @@ class PetController extends Controller
             'petPhoto' => $pet->petPhoto,
             'clientPhoto' => $pet->clientPhoto,
             'petAdditional' => $pet->petAdditional,
+            // Incluir las notas en el formato
+            'notes' => $pet->notes->map(function ($note) {
+                return [
+                    'id' => $note->id,
+                    'noteDescription' => $note->noteDescription,
+                    'noteDate' => $note->noteDate,
+                    'created_at' => $note->created_at,
+                    'updated_at' => $note->updated_at
+                ];
+            }),
             'created_at' => $pet->created_at,
             'updated_at' => $pet->updated_at
         ];
