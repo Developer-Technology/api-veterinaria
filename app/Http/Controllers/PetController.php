@@ -77,6 +77,7 @@ class PetController extends Controller
             'specieName' => $pet->species ? $pet->species->specieName : null,
             'breeds_id' => $pet->breeds_id,
             'breedName' => $pet->breed ? $pet->breed->breedName : null,
+            'clients_id' => $pet->clients_id,
             'clientName' => $pet->client ? $pet->client->clientName : null,
             'clientDoc' => $pet->client ? $pet->client->clientDoc : null,
             'petGender' => $pet->petGender,
