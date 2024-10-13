@@ -111,16 +111,10 @@ class PetNoteController extends Controller
     {
         // Validar datos entrantes
         $validator = Validator::make($request->all(), [
-            'pet_id' => 'required|exists:pets,id',
-            'noteDescription' => 'required|string|max:140',
-            'noteDate' => 'required|date',
+            'noteDescription' => 'required|string|max:140'
         ], [
-            'pet_id.required' => 'El ID de la mascota es obligatorio.',
-            'pet_id.exists' => 'La mascota no está registrada.',
             'noteDescription.required' => 'La descripción es obligatoria.',
-            'noteDescription.max' => 'La descripción no puede exceder los 140 caracteres.',
-            'noteDate.required' => 'La fecha es obligatoria.',
-            'noteDate.date' => 'La fecha debe ser válida.',
+            'noteDescription.max' => 'La descripción no puede exceder los 140 caracteres.'
         ]);
 
         // Si la validación falla, devuelve los errores
@@ -144,9 +138,7 @@ class PetNoteController extends Controller
 
         // Actualizar los datos de la nota de mascota
         $petNote->update([
-            'pet_id' => $request->pet_id,
-            'noteDescription' => $request->noteDescription,
-            'noteDate' => $request->noteDate,
+            'noteDescription' => $request->noteDescription
         ]);
 
         // Respuesta exitosa
