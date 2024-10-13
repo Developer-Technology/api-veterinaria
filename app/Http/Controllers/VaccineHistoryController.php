@@ -64,30 +64,46 @@ class VaccineHistoryController extends Controller
     public function showPet($petId)
     {
         // Buscar todos los historiales de vacunas relacionados con la mascota por pet_id
-        $vaccineHistory = VaccineHistory::with(['pet', 'vaccine'])
+        $vaccineHistory = VaccineHistory::with('vaccine')
                             ->where('pet_id', $petId)
                             ->get();
+
+        // Mapeamos el historial para combinar los datos del historial y la vacuna
+        $combinedData = $vaccineHistory->map(function($history) {
+            return [
+                'id' => $history->id,
+                'vaccineDate' => $history->vaccine_date,  // Asegúrate que este nombre coincida con tu columna
+                'productUsed' => $history->product,  // Asegúrate que este nombre coincida con tu columna
+                'observations' => $history->observation,  // Asegúrate que este nombre coincida con tu columna
+                'petId' => $history->pet_id,  // Aquí corregí el error de sintaxis
+                'vaccineId' => $history->vaccine_id,
+                'vaccineName' => $history->vaccine->vaccineName,
+                'created_at' => $history->created_at,
+                'updated_at' => $history->updated_at
+            ];
+        });
 
         // Retornar el historial de vacunas de la mascota
         return response()->json([
             'success' => true,
-            'data' => $vaccineHistory
+            'data' => $combinedData
         ], 200);
     }
+
 
     // Crear un nuevo registro de historial de vacuna
     public function store(Request $request)
     {
         $validator = Validator::make($request->all(), [
             'vaccine_id' => 'required|exists:vaccines,id',
-            'historiaFecha' => 'required|date',
-            'historiaProducto' => 'required|string|max:150',
-            'historiaObservacion' => 'nullable|string|max:150',
+            'vaccine_date' => 'required|date',
+            'product' => 'required|string|max:150',
+            'observation' => 'nullable|string|max:150',
             'pet_id' => 'required|exists:pets,id',
         ], [
             'vaccine_id.required' => 'La vacuna es obligatoria.',
             'vaccine_id.exists' => 'La vacuna no está registrada.',
-            'historiaFecha.required' => 'La fecha es obligatoria.',
+            'vaccine_date.required' => 'La fecha es obligatoria.',
             'pet_id.required' => 'La mascota es obligatoria.',
             'pet_id.exists' => 'La mascota no está registrada.',
         ]);
@@ -101,7 +117,7 @@ class VaccineHistoryController extends Controller
         }
 
         $vaccineHistory = VaccineHistory::create($request->only([
-            'vaccine_id', 'historiaFecha', 'historiaProducto', 'historiaObservacion', 'pet_id'
+            'vaccine_id', 'vaccine_date', 'product', 'observation', 'pet_id'
         ]));
 
         return response()->json([
