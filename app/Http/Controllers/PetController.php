@@ -172,10 +172,23 @@ class PetController extends Controller
         $validator = Validator::make($request->all(), [
             'petName' => 'required|string|max:100',
             'petBirthDate' => 'required|date',
+            'petWeight' => 'required|string|max:10',
+            'petColor' => 'required|string|max:100',
             'species_id' => 'required|exists:species,id',
             'breeds_id' => 'required|exists:breeds,id',
             'petGender' => 'required|string|max:10',
-            'clients_id' => 'required|exists:clients,id',
+            'clients_id' => 'required|exists:clients,id'
+        ], [
+            'petWeight.required' => 'El peso de la mascota es obligatorio.',
+            'petColor.required' => 'El color de la mascota es obligatorio.',
+            'petName.required' => 'El nombre de la mascota es obligatorio.',
+            'petBirthDate.required' => 'La fecha de nacimiento de la mascota es obligatoria.',
+            'species_id.required' => 'La especie es obligatoria.',
+            'species_id.exists' => 'La especie no está registrada.',
+            'breeds_id.required' => 'La raza es obligatoria.',
+            'breeds_id.exists' => 'La raza no está registrada.',
+            'clients_id.required' => 'El cliente es obligatorio.',
+            'clients_id.exists' => 'El cliente no está registrado.',
         ]);
 
         if ($validator->fails()) {
