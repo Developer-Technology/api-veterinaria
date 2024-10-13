@@ -65,9 +65,31 @@ class PetController extends Controller
             ], 404);
         }
 
+        // Formatear los datos de la mascota tal como en el método index
+        $formattedPet = [
+            'id' => $pet->id,
+            'petCode' => $pet->petCode,
+            'petName' => $pet->petName,
+            'petBirthDate' => $pet->petBirthDate,
+            'petWeight' => $pet->petWeight,
+            'petColor' => $pet->petColor,
+            'species_id' => $pet->species_id,
+            'specieName' => $pet->species ? $pet->species->specieName : null,
+            'breeds_id' => $pet->breeds_id,
+            'breedName' => $pet->breed ? $pet->breed->breedName : null,
+            'clientName' => $pet->client ? $pet->client->clientName : null,
+            'clientDoc' => $pet->client ? $pet->client->clientDoc : null,
+            'petGender' => $pet->petGender,
+            'petPhoto' => $pet->petPhoto,
+            'clientPhoto' => $pet->clientPhoto,
+            'petAdditional' => $pet->petAdditional,
+            'created_at' => $pet->created_at,
+            'updated_at' => $pet->updated_at
+        ];
+
         return response()->json([
             'success' => true,
-            'data' => $pet
+            'data' => $formattedPet
         ], 200);
     }
 
