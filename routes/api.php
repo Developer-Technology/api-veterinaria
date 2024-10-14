@@ -113,7 +113,7 @@ Route::group([
     Route::get('pets/{petId}/vaccine-history', [VaccineHistoryController::class, 'showPet'])->name('vaccineshistory.showPet');
     Route::delete('pets/{petId}/vaccine-history', [VaccineHistoryController::class, 'destroyByPetId'])->name('vaccineshistory.destroyByPetId');
     //Historias Mascotas
-    Route::get('pet-history', [PetHistoryController::class, 'index'])->name('pet-history.index');
+    //Route::get('pet-history', [PetHistoryController::class, 'index'])->name('pet-history.index');
     Route::get('pet-histories/{id}', [PetHistoryController::class, 'allHistory'])->name('pet-histories.allHistory');
     Route::get('pet-history/{id}', [PetHistoryController::class, 'show'])->name('pet-history.show');
     Route::post('pet-history', [PetHistoryController::class, 'store'])->name('pet-history.store');

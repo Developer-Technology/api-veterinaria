@@ -151,7 +151,7 @@ class PetHistoryController extends Controller
             foreach ($request->file('files') as $file) {
                 $filePath = $file->store('public/pet_history_files');
                 $fileUrl = Storage::url($filePath);
-    
+
                 PetHistoryFile::create([
                     'pet_history_id' => $petHistory->id,
                     'file_path' => $fileUrl,
