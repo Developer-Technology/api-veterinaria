@@ -104,6 +104,7 @@ class VaccineHistoryController extends Controller
             'vaccine_id.required' => 'La vacuna es obligatoria.',
             'vaccine_id.exists' => 'La vacuna no está registrada.',
             'vaccine_date.required' => 'La fecha es obligatoria.',
+            'product.required' => 'El producto es obligatorio.',
             'pet_id.required' => 'La mascota es obligatoria.',
             'pet_id.exists' => 'La mascota no está registrada.',
         ]);
@@ -141,10 +142,14 @@ class VaccineHistoryController extends Controller
 
         $validator = Validator::make($request->all(), [
             'vaccine_id' => 'required|exists:vaccines,id',
-            'historiaFecha' => 'required|date',
-            'historiaProducto' => 'required|string|max:150',
-            'historiaObservacion' => 'nullable|string|max:150',
-            'pet_id' => 'required|exists:pets,id',
+            'vaccine_date' => 'required|date',
+            'product' => 'required|string|max:150',
+            'observation' => 'nullable|string|max:150'
+        ], [
+            'vaccine_id.required' => 'La vacuna es obligatoria.',
+            'vaccine_id.exists' => 'La vacuna no está registrada.',
+            'vaccine_date.required' => 'La fecha es obligatoria.',
+            'product.required' => 'El producto es obligatorio.',
         ]);
 
         if ($validator->fails()) {
@@ -156,7 +161,7 @@ class VaccineHistoryController extends Controller
         }
 
         $vaccineHistory->update($request->only([
-            'vaccine_id', 'historiaFecha', 'historiaProducto', 'historiaObservacion', 'pet_id'
+            'vaccine_id', 'vaccine_date', 'product', 'observation'
         ]));
 
         return response()->json([
