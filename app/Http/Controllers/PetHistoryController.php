@@ -25,19 +25,38 @@ class PetHistoryController extends Controller
      */
     public function index()
     {
-        $shistories = PetHistory::all(); // Obtener todas las historias
+        // Cargar las historias con las relaciones de la mascota y el usuario
+        $shistories = PetHistory::with(['pet', 'user'])->get();
+
+        // Formatear los datos para incluir los nombres de la mascota y del usuario
+        $formattedHistories = $shistories->map(function ($history) {
+            return [
+                'id' => $history->id,
+                'history_code' => $history->history_code,
+                'history_date' => $history->history_date,
+                'history_time' => $history->history_time,
+                'history_reason' => $history->history_reason,
+                'history_symptoms' => $history->history_symptoms,
+                'history_diagnosis' => $history->history_diagnosis,
+                'history_treatment' => $history->history_treatment,
+                'userName' => $history->user ? $history->user->name : null, // Nombre del usuario
+                'petName' => $history->pet ? $history->pet->petName : null, // Nombre de la mascota
+            ];
+        });
 
         return response()->json([
             'success' => true,
-            'data' => $shistories
+            'data' => $formattedHistories
         ], 200);
     }
 
     // Listar todas las historias clínicas de una mascota específica
     public function allHistory($pet_id)
     {
+        // Buscar la mascota por ID
         $pet = Pet::find($pet_id);
 
+        // Verificar si la mascota existe
         if (!$pet) {
             return response()->json([
                 'success' => false,
@@ -45,11 +64,37 @@ class PetHistoryController extends Controller
             ], 404);
         }
 
-        $histories = PetHistory::with('files')->where('pet_id', $pet_id)->get();
+        // Cargar las historias relacionadas con la mascota y el usuario
+        $shistories = PetHistory::with(['pet', 'user'])
+            ->where('pet_id', $pet_id)  // Filtrar por el ID de la mascota
+            ->get();
 
+        // Formatear los datos para incluir los nombres de la mascota y del usuario
+        $formattedHistories = $shistories->map(function ($history) {
+            return [
+                'id' => $history->id,
+                'history_code' => $history->history_code,
+                'history_date' => $history->history_date,
+                'history_time' => $history->history_time,
+                'history_reason' => $history->history_reason,
+                'history_symptoms' => $history->history_symptoms,
+                'history_diagnosis' => $history->history_diagnosis,
+                'history_treatment' => $history->history_treatment,
+                'userName' => $history->user ? $history->user->name : null, // Nombre del usuario
+                'petName' => $history->pet ? $history->pet->petName : null, // Nombre de la mascota
+                'files' => $history->files->map(function($file) {
+                    return [
+                        'file_path' => $file->file_path,
+                        'file_type' => $file->file_type,
+                    ];
+                }) // Incluir los archivos asociados
+            ];
+        });
+
+        // Devolver las historias formateadas
         return response()->json([
             'success' => true,
-            'data' => $histories,
+            'data' => $formattedHistories,
         ], 200);
     }
 
@@ -58,7 +103,6 @@ class PetHistoryController extends Controller
     {
         // Validar los datos de entrada
         $validator = Validator::make($request->all(), [
-            'history_code' => 'required|string|max:50',
             'history_date' => 'required|date',
             'history_time' => 'required',
             'history_reason' => 'required|string|max:100',
@@ -68,6 +112,13 @@ class PetHistoryController extends Controller
             'user_id' => 'required|exists:users,id',
             'pet_id' => 'required|exists:pets,id',
             'files.*' => 'nullable|file|max:2048', // Soporta múltiples archivos con un tamaño máximo de 2MB cada uno
+        ], [
+            'history_date.required' => 'La fecha es obligatoria.',
+            'history_time.required' => 'La hora es obligatoria.',
+            'history_reason.required' => 'El motivo es obligatorio.',
+            'history_symptoms.required' => 'El síntoma es obligatorio.',
+            'history_diagnosis.required' => 'El diagnóstico es obligatorio.',
+            'history_treatment.required' => 'El tratamiento es obligatorio.',
         ]);
 
         if ($validator->fails()) {
@@ -78,9 +129,13 @@ class PetHistoryController extends Controller
             ], 422);
         }
 
+        // Generar el código de la historia clínica automáticamente
+        $lastHistory = PetHistory::orderBy('id', 'desc')->first();
+        $nextCode = $this->generateNextHistoryCode($lastHistory);
+
         // Crear la nueva historia clínica
         $petHistory = PetHistory::create([
-            'history_code' => $request->history_code,
+            'history_code' => $nextCode,  // Código generado automáticamente
             'history_date' => $request->history_date,
             'history_time' => $request->history_time,
             'history_reason' => $request->history_reason,
@@ -110,6 +165,25 @@ class PetHistoryController extends Controller
             'message' => 'Historia clínica creada con éxito',
             'data' => $petHistory,
         ], 201);
+    }
+
+    // Función para generar el siguiente código de historia
+    private function generateNextHistoryCode($lastHistory)
+    {
+        // Si no existe una historia previa, generar el primer código
+        if (!$lastHistory) {
+            return 'HM-00001';
+        }
+
+        // Extraer el número del último código
+        $lastCode = $lastHistory->history_code;
+        $lastNumber = (int)substr($lastCode, 3);  // Extraer la parte numérica del código (por ejemplo: 00001)
+        
+        // Incrementar el número
+        $nextNumber = $lastNumber + 1;
+        
+        // Generar el nuevo código con el formato "HM-XXXXX"
+        return 'HM-' . str_pad($nextNumber, 5, '0', STR_PAD_LEFT);
     }
 
     // Obtener una historia clínica específica

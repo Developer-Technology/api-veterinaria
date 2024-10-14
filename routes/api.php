@@ -114,11 +114,11 @@ Route::group([
     Route::delete('pets/{petId}/vaccine-history', [VaccineHistoryController::class, 'destroyByPetId'])->name('vaccineshistory.destroyByPetId');
     //Historias Mascotas
     Route::get('pet-history', [PetHistoryController::class, 'index'])->name('pet-history.index');
-    Route::get('pet-histories/{id}', [PetHistoryController::class, 'allHistory'])->name('pet-history.allHistory');
+    Route::get('pet-histories/{id}', [PetHistoryController::class, 'allHistory'])->name('pet-histories.allHistory');
     Route::get('pet-history/{id}', [PetHistoryController::class, 'show'])->name('pet-history.show');
     Route::post('pet-history', [PetHistoryController::class, 'store'])->name('pet-history.store');
     Route::put('pet-history/{id}', [PetHistoryController::class, 'update'])->name('pet-history.update');
-    Route::delete('pet-history/{id}', [PetHistoryController::class, 'destroy'])->name('vaccineshistory.destroy');
+    Route::delete('pet-history/{id}', [PetHistoryController::class, 'destroy'])->name('pet-history.destroy');
     //Adjuntos Historias Mascotas
     Route::get('files-history/{id}', [PetHistoryFileController::class, 'index'])->name('files-history.index');
     Route::post('files-history', [PetHistoryFileController::class, 'store'])->name('files-history.store');
