@@ -88,6 +88,7 @@ Route::group([
     Route::post('petnotes', [PetNoteController::class, 'store'])->name('petnotes.store');
     Route::put('petnotes/{id}', [PetNoteController::class, 'update'])->name('petnotes.update');
     Route::delete('petnotes/{id}', [PetNoteController::class, 'destroy'])->name('petnotes.destroy');
+    Route::delete('pets/{petId}/notes', [PetNoteController::class, 'destroyByPetId'])->name('petnotes.destroyByPetId');
     //Empresas
     Route::get('companies', [CompanyController::class, 'index'])->name('companies.index');
     Route::get('companies/{id}', [CompanyController::class, 'show'])->name('companies.show');
@@ -108,4 +109,5 @@ Route::group([
     Route::put('vaccineshistory/{id}', [VaccineHistoryController::class, 'update'])->name('vaccineshistory.update');
     Route::delete('vaccineshistory/{id}', [VaccineHistoryController::class, 'destroy'])->name('vaccineshistory.destroy');
     Route::get('pets/{petId}/vaccine-history', [VaccineHistoryController::class, 'showPet'])->name('vaccineshistory.showPet');
+    Route::delete('pets/{petId}/vaccine-history', [VaccineHistoryController::class, 'destroyByPetId'])->name('vaccineshistory.destroyByPetId');
 });

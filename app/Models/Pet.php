@@ -54,4 +54,10 @@ class Pet extends Model
         return $this->hasMany(PetNote::class, 'pet_id', 'id');
     }
 
+    // Definir la relación con las vacunas
+    public function vaccineHistories()
+    {
+        return $this->hasMany(VaccineHistory::class, 'pet_id', 'id');
+    }
+
 }

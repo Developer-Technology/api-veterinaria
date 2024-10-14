@@ -6,6 +6,7 @@ use App\Models\Pet;
 use App\Models\Breed;
 use App\Models\Specie;
 use App\Models\Client;
+use App\Models\VaccineHistory;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Storage;
 use Validator;
@@ -21,7 +22,7 @@ class PetController extends Controller
     // Listar todas las mascotas con sus respectivas especies, razas, y clientes
     public function index()
     {
-        $pets = Pet::with(['species', 'breed', 'client', 'notes'])->get();
+        $pets = Pet::with(['species', 'breed', 'client'])->get();
 
         // Mapear los resultados para formatearlos según se requiere
         $formattedPets = $pets->map(function ($pet) {
@@ -42,12 +43,6 @@ class PetController extends Controller
                 'petPhoto' => $pet->petPhoto,
                 'clientPhoto' => $pet->clientPhoto,
                 'petAdditional' => $pet->petAdditional,
-                // Incluir las notas en el formato
-                'notes' => $pet->notes->map(function ($note) {
-                    return [
-                        'id' => $note->id
-                    ];
-                }),
                 'created_at' => $pet->created_at,
                 'updated_at' => $pet->updated_at
             ];

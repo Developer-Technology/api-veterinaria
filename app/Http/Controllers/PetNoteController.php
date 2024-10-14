@@ -175,4 +175,28 @@ class PetNoteController extends Controller
         ], 200);
     }
 
+    // Eliminar todas las notas asociadas a una mascota por su pet_id
+    public function destroyByPetId($petId)
+    {
+        // Buscar todas las notas asociadas con el pet_id
+        $vaccineHistories = PetNote::where('pet_id', $petId)->get();
+
+        if ($vaccineHistories->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se encontraron historiales de notas para esta mascota',
+            ], 404);
+        }
+
+        // Eliminar cada vacuna encontrada
+        foreach ($vaccineHistories as $vaccineHistory) {
+            $vaccineHistory->delete();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Todos los historiales de notas eliminados con éxito',
+        ], 200);
+    }
+
 }

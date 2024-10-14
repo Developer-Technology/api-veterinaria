@@ -191,4 +191,28 @@ class VaccineHistoryController extends Controller
         ], 200);
     }
 
+    // Eliminar todas las vacunas asociadas a una mascota por su pet_id
+    public function destroyByPetId($petId)
+    {
+        // Buscar todas las vacunas asociadas con el pet_id
+        $vaccineHistories = VaccineHistory::where('pet_id', $petId)->get();
+
+        if ($vaccineHistories->isEmpty()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'No se encontraron historiales de vacunas para esta mascota',
+            ], 404);
+        }
+
+        // Eliminar cada vacuna encontrada
+        foreach ($vaccineHistories as $vaccineHistory) {
+            $vaccineHistory->delete();
+        }
+
+        return response()->json([
+            'success' => true,
+            'message' => 'Todos los historiales de vacunas eliminados con éxito',
+        ], 200);
+    }
+
 }
