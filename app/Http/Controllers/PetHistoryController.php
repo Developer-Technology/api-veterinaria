@@ -84,6 +84,7 @@ class PetHistoryController extends Controller
                 'petName' => $history->pet ? $history->pet->petName : null, // Nombre de la mascota
                 'files' => $history->files->map(function($file) {
                     return [
+                        'id' => $file->id,
                         'file_path' => $file->file_path,
                         'file_type' => $file->file_type,
                     ];
