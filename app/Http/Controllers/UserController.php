@@ -50,6 +50,67 @@ class UserController extends Controller
     }
 
     /**
+     * Register a User.
+     *
+     * @return \Illuminate\Http\JsonResponse
+     */
+    public function store(Request $request) {
+        // Validación
+        $validator = Validator::make($request->all(), [
+            'name' => 'required|string|max:255',
+            'doc' => 'required|string|unique:users',
+            'email' => 'required|email|unique:users',
+            'password' => 'required|min:8|confirmed',
+            'privilege' => 'required|string|in:User,Admin,Super Admin'
+        ], [
+            'name.required' => 'El nombre es obligatorio.',
+            'doc.required' => 'El documento es obligatorio.',
+            'doc.unique' => 'El documento ya está registrado.',
+            'email.required' => 'El correo electrónico es obligatorio.',
+            'email.email' => 'El correo electrónico no es válido.',
+            'email.unique' => 'El correo electrónico ya está registrado.',
+            'password.required' => 'La contraseña es obligatoria.',
+            'password.min' => 'La contraseña debe tener al menos 8 caracteres.',
+            'password.confirmed' => 'La confirmación de la contraseña no coincide.',
+            'privilege.required' => 'El privilegio es obligatorio.',
+            'privilege.in' => 'El privilegio debe ser uno de los siguientes: User, Admin, Super Admin.'
+        ]);
+    
+        // Verificar si la validación falla
+        if ($validator->fails()) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Errores de validación.',
+                'errors' => $validator->errors()
+            ], 422);
+        }
+    
+        // Crear nuevo usuario
+        $user = User::create([
+            'doc' => $request->doc,
+            'name' => $request->name,
+            'email' => $request->email,
+            'password' => bcrypt($request->password),
+            'phone' => $request->phone,
+            'sex' => $request->sex,
+            'status' => $request->status,
+            'privilege' => $request->privilege,
+            'username' => $request->username
+        ]);
+    
+        // Respuesta
+        return response()->json([
+            'success' => true,
+            'message' => 'Usuario registrado correctamente.',
+            'user' => [
+                'name' => $user->name,
+                'email' => $user->email,
+                'created_at' => $user->created_at,
+            ]
+        ], 201);
+    }      
+
+    /**
      * Editar un usuario existente.
      *
      * @param \Illuminate\Http\Request $request

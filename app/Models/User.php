@@ -27,6 +27,7 @@ class User extends Authenticatable implements JWTSubject
         'sex',         // Añadir el campo 'sex'
         'status',      // Añadir el campo 'status'
         'username',    // Añadir el campo 'username'
+        'privilege',
     ];
 
     /**
