@@ -105,7 +105,7 @@ class AuthController extends Controller
                 'success' => false,
                 'message' => 'Errores de validación.',
                 'errors' => $validator->errors()
-            ], 422);
+            ], 422)->header('Content-Type', 'application/json');
         }
 
         // Intentar autenticar al usuario
