@@ -47,6 +47,7 @@ Route::group([
     Route::get('/users', [UserController::class, 'index'])->name('users.index');
     Route::get('/users/{id}', [UserController::class, 'show'])->name('users.show');
     Route::put('/users/{id}', [UserController::class, 'update'])->name('users.update');
+    Route::delete('/users/{id}', [UserController::class, 'destroy'])->name('users.destroy');
     //Clientes
     Route::get('/clients', [ClientController::class, 'index'])->name('clients.index');
     Route::get('/clients/{id}', [ClientController::class, 'show'])->name('clients.show');
