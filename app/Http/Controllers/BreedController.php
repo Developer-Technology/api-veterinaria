@@ -17,26 +17,35 @@ class BreedController extends Controller
     }
 
     // Listar todas las razas con sus respectivas especies
-    public function index()
+    public function index(Request $request)
     {
+        // Verificar si el parámetro "species_id" está presente en la solicitud
+    $speciesId = $request->query('species_id');
+
+    if ($speciesId) {
+        // Si se proporciona "species_id", filtrar las razas por especie
+        $breeds = Breed::with('species')->where('species_id', $speciesId)->get();
+    } else {
+        // Si no se proporciona "species_id", obtener todas las razas
         $breeds = Breed::with('species')->get();
+    }
 
-        // Mapear los resultados para formatearlos según se requiere
-        $formattedBreeds = $breeds->map(function ($breed) {
-            return [
-                'id' => $breed->id,
-                'breedName' => $breed->breedName,
-                'species_id' => $breed->species_id,
-                'specieName' => $breed->species ? $breed->species->specieName : null,
-                'created_at' => $breed->created_at,
-                'updated_at' => $breed->updated_at
-            ];
-        });
+    // Mapear los resultados para formatearlos según se requiere
+    $formattedBreeds = $breeds->map(function ($breed) {
+        return [
+            'id' => $breed->id,
+            'breedName' => $breed->breedName,
+            'species_id' => $breed->species_id,
+            'specieName' => $breed->species ? $breed->species->specieName : null,
+            'created_at' => $breed->created_at,
+            'updated_at' => $breed->updated_at
+        ];
+    });
 
-        return response()->json([
-            'success' => true,
-            'data' => $formattedBreeds
-        ], 200);
+    return response()->json([
+        'success' => true,
+        'data' => $formattedBreeds
+    ], 200);
     }
 
     // Obtener una raza específica por su ID
