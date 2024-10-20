@@ -17,9 +17,18 @@ class VaccineController extends Controller
     }
 
     // Listar todas las vacunas con sus respectivas especies
-    public function index()
+    public function index(Request $request)
     {
-        $vaccines = Vaccine::with('species')->get();
+        // Verificar si se envía el parámetro species_id
+        $speciesId = $request->input('species_id');
+
+        if ($speciesId) {
+            // Filtrar las vacunas por el species_id recibido
+            $vaccines = Vaccine::with('species')->where('species_id', $speciesId)->get();
+        } else {
+            // Obtener todas las vacunas si no se envía el parámetro
+            $vaccines = Vaccine::with('species')->get();
+        }
 
         // Mapear los resultados para formatearlos según se requiere
         $formattedVaccines = $vaccines->map(function ($vaccine) {

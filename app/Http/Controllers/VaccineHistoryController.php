@@ -90,7 +90,6 @@ class VaccineHistoryController extends Controller
         ], 200);
     }
 
-
     // Crear un nuevo registro de historial de vacuna
     public function store(Request $request)
     {
