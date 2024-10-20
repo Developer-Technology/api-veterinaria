@@ -20,9 +20,20 @@ class PetController extends Controller
     }
 
     // Listar todas las mascotas con sus respectivas especies, razas, y clientes
-    public function index()
+    public function index(Request $request)
     {
-        $pets = Pet::with(['species', 'breed', 'client'])->get();
+        $query = $request->query('query');
+
+        // Si se envía un valor en el parámetro "query", filtrar por nombre o código de mascota
+        if ($query) {
+            $pets = Pet::with(['species', 'breed', 'client'])
+                ->where('petName', 'like', "%{$query}%")
+                ->orWhere('petCode', 'like', "%{$query}%")
+                ->get();
+        } else {
+            // Si no hay búsqueda, listar todas las mascotas
+            $pets = Pet::with(['species', 'breed', 'client'])->get();
+        }
 
         // Mapear los resultados para formatearlos según se requiere
         $formattedPets = $pets->map(function ($pet) {
